@@ -1,6 +1,8 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DataSource } from 'typeorm';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +24,16 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix('api');
+
+  // Verificar conexión a BD
+  const dataSource = app.get(DataSource);
+  try {
+    await dataSource.query('SELECT 1');
+    console.log('✔️ Conexión a PostgreSQL OK');
+  } catch (err) {
+    console.error('❌ Error conectando a PostgreSQL:', err);
+    process.exit(1); // Detener la app
+  }
 
   const port = Number(process.env.PORT ?? 3000);
   await app.listen(port);

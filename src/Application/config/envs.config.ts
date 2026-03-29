@@ -3,9 +3,12 @@ export const EnvConfig = () => ({
   port: parseInt(process.env.PORT || '3001', 10),
 
   // variables de base de datos
-  dbHost: process.env.DB_HOST,
-  dbPort: parseInt(process.env.DB_PORT || '5432', 10),
-  dbUser: process.env.DB_USER,
-  dbPass: process.env.DB_PASS,
-  dbName: process.env.DB_NAME,
+  db: {
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASS,
+    name: process.env.DB_NAME,
+  },
+
 });
