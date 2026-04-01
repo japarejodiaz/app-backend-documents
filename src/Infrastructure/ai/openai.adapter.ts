@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
-import { AiAnalysisPort } from '../../Domain/analysis/ai-analysis.port';
-import { DocumentRepositoryPort } from '../../Domain/documents/document.repository.port';
 
+import type { AiAnalysisPort } from '../../Domain/analysis/ai-analysis.port';
+import type { DocumentRepositoryPort } from '../../Domain/documents/document.repository.port';
 
 
 @Injectable()
@@ -10,6 +10,7 @@ export class OpenAiAdapter implements AiAnalysisPort {
   private readonly client: OpenAI;
 
   constructor(
+    @Inject('DocumentRepositoryPort')
     private readonly documentRepo: DocumentRepositoryPort,
   ) {
     this.client = new OpenAI({
@@ -49,7 +50,7 @@ export class OpenAiAdapter implements AiAnalysisPort {
 
     return this.callModel(`
       Extrae las palabras clave más relevantes del siguiente texto:
-      ${doc.text}
+      ${doc.text ?? ''}
     `);
   }
 
@@ -60,17 +61,23 @@ export class OpenAiAdapter implements AiAnalysisPort {
     `);
   }
 
-  async detectTopics(text: string): Promise<any> {
+  async extractClauses(documentId: string): Promise<any> {
+    const doc = await this.documentRepo.findById(documentId);
+    if (!doc) throw new Error('Document not found');
+
     return this.callModel(`
-      Identifica los temas principales del siguiente texto:
-      ${text}
+      Extrae las cláusulas más importantes del siguiente texto legal:
+      ${doc.text ?? ''}
     `);
   }
 
-  async extractClauses(text: string): Promise<any> {
+  async detectTopics(documentId: string): Promise<any> {
+    const doc = await this.documentRepo.findById(documentId);
+    if (!doc) throw new Error('Document not found');
+
     return this.callModel(`
-      Extrae las cláusulas legales importantes del siguiente texto:
-      ${text}
+      Identifica los temas principales del siguiente texto legal:
+      ${doc.text ?? ''}
     `);
   }
 

@@ -2,12 +2,18 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('Main');
-  app.setGlobalPrefix(process.env.BASE_PATH ?? 'api');
+  const configBaseP = app.get(ConfigService);
+  const basePath = configBaseP.get<string>('basePath') ?? 'api';
+
+  app.setGlobalPrefix(basePath);
+
 
   app.enableCors({
     origin: '*',
@@ -23,7 +29,15 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('api');
+  const config = new DocumentBuilder()
+    .setTitle('Documents Analyzer API')
+    .setDescription('API para análisis de documentos')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/app-documents-ia/docs', app, document);
 
   // Verificar conexión a BD
   const dataSource = app.get(DataSource);
