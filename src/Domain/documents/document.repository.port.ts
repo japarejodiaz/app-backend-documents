@@ -1,5 +1,6 @@
 import { Document } from "./document";
 
+export const DocumentRepositoryPortToken = Symbol('DocumentRepositoryPort');
 
 export interface DocumentRepositoryPort {
   save(document: Document): Promise<Document>;

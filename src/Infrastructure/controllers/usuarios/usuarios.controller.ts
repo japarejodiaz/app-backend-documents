@@ -1,10 +1,9 @@
-import { Controller, Post, Body, Get, Param, Logger } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Post, Body, Get, Param, Logger, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-import { CreateUserUseCase } from '../../../Domain/users/create-user.usecase';
 import { GetUserByIdUseCase } from '../../../Domain/users/get-user-by-id.usecase';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { JwtAuthGuard } from '../../../Application/auth/guards/jwt.guard';
 
 @ApiTags('Users')
 @Controller('users')
@@ -12,11 +11,10 @@ export class UsuariosController {
 
   private readonly logger = new Logger('UsuariosController');
   constructor(
-    private readonly createUser: CreateUserUseCase,
     private readonly getUserById: GetUserByIdUseCase,
   ) {}
 
-  @Post()
+  /*@Post()
   @ApiOperation({ summary: 'Crea un usuario' })
   @ApiResponse({ status: 201, type: UserResponseDto })
   async crearUsuario(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
@@ -28,8 +26,10 @@ export class UsuariosController {
       name: user.name,
       email: user.email,
     };
-  }
+  }*/
 
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)  // ← PROTECCIÓN JWT
   @Get(':id')
   @ApiOperation({ summary: 'Obtiene un usuario por ID' })
   @ApiResponse({ status: 200, type: UserResponseDto })

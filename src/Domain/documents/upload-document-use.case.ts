@@ -1,14 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { DocumentRepositoryPortToken } from './document.repository.port';
 import type { DocumentRepositoryPort } from './document.repository.port';
+import { TextExtractorPortToken } from './text-extractor.port';
 import type { TextExtractorPort } from './text-extractor.port';
 import { Document } from './document';
 
 @Injectable()
 export class UploadDocumentUseCase {
   constructor(
-    @Inject('DocumentRepositoryPort')
+    @Inject(DocumentRepositoryPortToken)
     private readonly documentRepository: DocumentRepositoryPort,
-    @Inject('TextExtractorPort')
+    @Inject(TextExtractorPortToken)
     private readonly textExtractor: TextExtractorPort,
   ) {}
 

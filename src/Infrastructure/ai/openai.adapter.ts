@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 
 import type { AiAnalysisPort } from '../../Domain/analysis/ai-analysis.port';
+import { DocumentRepositoryPortToken } from '../../Domain/documents/document.repository.port';
 import type { DocumentRepositoryPort } from '../../Domain/documents/document.repository.port';
 
 
@@ -10,7 +11,7 @@ export class OpenAiAdapter implements AiAnalysisPort {
   private readonly client: OpenAI;
 
   constructor(
-    @Inject('DocumentRepositoryPort')
+    @Inject(DocumentRepositoryPortToken)
     private readonly documentRepo: DocumentRepositoryPort,
   ) {
     this.client = new OpenAI({

@@ -25,6 +25,9 @@ export class UserEntity {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({ nullable: true })
+  password: string;
+
   @OneToMany(() => DocumentEntity, doc => doc.user)
   documents: DocumentEntity[];
 

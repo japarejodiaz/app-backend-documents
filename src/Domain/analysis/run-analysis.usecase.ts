@@ -1,17 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+// Tokens
+import { AiAnalysisPortToken } from './ai-analysis.port';
+import { AnalysisRepositoryPortToken } from './analysis.repository.port';
 
-import type { AiAnalysisPort } from './ai-analysis.port';
+// Puertos
 import type { AnalysisRepositoryPort } from './analysis.repository.port';
+import type { AiAnalysisPort } from './ai-analysis.port';
 import { Analysis } from './analysis';
 import { RunAnalysisDto } from '../../Infrastructure/controllers/analysis/dto/run-analysis.dto';
 
 @Injectable()
 export class RunAnalysisUseCase {
   constructor(
-    @Inject('AiAnalysisPort')
+    @Inject(AiAnalysisPortToken)
     private readonly aiAnalysis: AiAnalysisPort,
-    @Inject('AnalysisRepositoryPort')
+    @Inject(AnalysisRepositoryPortToken)
     private readonly analysisRepository: AnalysisRepositoryPort,
   ) {}
 

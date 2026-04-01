@@ -1,9 +1,12 @@
+import * as bcrypt from 'bcrypt';
+
 export class User {
   constructor(
     public readonly id: string,
     public readonly name: string,
     public readonly email: string,
     public readonly role: string,
-    public readonly createdAt: Date
-) {}
+    public readonly createdAt: Date,
+    public password: string,
+  ) {}
 }
