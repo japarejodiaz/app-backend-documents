@@ -8,7 +8,8 @@ export class UserMapper {
       entity.name,
       entity.email,
       entity.role,
-      entity.createdAt
+      entity.createdAt,
+      entity.password
     );
   }
 
@@ -18,7 +19,8 @@ export class UserMapper {
       name: domain.name,
       email: domain.email,
       role: domain.role,
-      createdAt: domain.createdAt
+      createdAt: domain.createdAt,
+      password: domain.password
     };
   }
 }

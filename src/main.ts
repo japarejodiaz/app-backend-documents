@@ -33,7 +33,15 @@ async function bootstrap() {
     .setTitle('Documents Analyzer API')
     .setDescription('API para análisis de documentos')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'JWT-auth', // ← nombre del esquema
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

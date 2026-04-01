@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { UserRepositoryPort } from '../../../Domain/users/user.repository.port';
+import type { UserRepositoryPort } from '../../../Domain/users/user.repository.port';
 import { UserEntity } from '../entities/user.entity';
 import { UserMapper } from '../mappers/user.mapper';
 import { User } from '../../../Domain/users/user';
-import { Repository } from 'typeorm';
+
 
 @Injectable()
 export class UserRepositoryAdapter implements UserRepositoryPort {
@@ -26,7 +27,8 @@ export class UserRepositoryAdapter implements UserRepositoryPort {
 
   async save(user: User): Promise<User> {
     const entity = this.repo.create(UserMapper.toEntity(user));
-    await this.repo.save(entity);
-    return user;
+    const saved = await this.repo.save(entity);
+    return UserMapper.toDomain(saved);
   }
+
 }

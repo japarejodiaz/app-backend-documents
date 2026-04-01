@@ -3,11 +3,17 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { User } from './user';
 import type { UserRepositoryPort } from './user.repository.port';
-import { UsuariosController } from '../../Infrastructure/controllers/usuarios/usuarios.controller';
+import { UserRepositoryPortToken } from './user.repository.port';
+import { PasswordHasherPortToken } from '../auth/ports/password-hasher.port';
+import type { PasswordHasherPort } from '../auth/ports/password-hasher.port';
+
+
+
 
 export interface CreateUserDto {
   name: string;
   email: string;
+  password: string;
 }
 
 @Injectable()
@@ -15,17 +21,24 @@ export class CreateUserUseCase {
 
   private readonly logger = new Logger('CreateUserUseCase');
   constructor(
-    @Inject('UserRepositoryPort')
+    @Inject(UserRepositoryPortToken)
     private readonly userRepo: UserRepositoryPort,
+
+    @Inject(PasswordHasherPortToken)
+    private readonly hasher: PasswordHasherPort,
+
   ) {}
 
   async execute(dto: CreateUserDto): Promise<User> {
+    const hashedPassword = await this.hasher.hash(dto.password);
+
     const user = new User(
       uuidv4(),
       dto.name,
       dto.email,
       'user',
       new Date(),
+      hashedPassword,
     );
     this.logger.log(user);
     return this.userRepo.save(user);

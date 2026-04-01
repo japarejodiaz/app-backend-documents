@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Entidades de base de datos
 import { PersistenceModule } from './Infrastructure/persistence/persistence.module';
 import { ControllersModule } from './Infrastructure/controllers/controllers.module';
+import { AuthModule } from './Infrastructure/auth/auth.module';
 
 
 
@@ -46,7 +47,7 @@ import { ControllersModule } from './Infrastructure/controllers/controllers.modu
     }),
     PersistenceModule,
     ControllersModule,
-
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
