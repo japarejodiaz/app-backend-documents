@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsuariosController } from './Infrastructure/controllers/usuarios/usuarios.controller';
 import { EnvValidationSchema } from './Application/config/env.validation';
 import { EnvConfig } from './Application/config/envs.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -9,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Entidades de base de datos
 import { PersistenceModule } from './Infrastructure/persistence/persistence.module';
-import { ApplicationModule } from './Application/application.module';
+import { ControllersModule } from './Infrastructure/controllers/controllers.module';
 
 
 
@@ -41,14 +40,15 @@ import { ApplicationModule } from './Application/application.module';
           database: db.name,
           autoLoadEntities: true,
           synchronize: config.get('environment') === 'develop',
-          logging: true, // 👈 AGREGA ESTO
+          logging: true,
         };
       },
     }),
-    PersistenceModule,    // Registra las entidades
-    ApplicationModule
+    PersistenceModule,
+    ControllersModule,
+
   ],
-  controllers: [AppController, UsuariosController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {

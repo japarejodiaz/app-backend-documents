@@ -1,41 +1,54 @@
 import { Module } from '@nestjs/common';
 import { PersistenceModule } from '../Infrastructure/persistence/persistence.module';
+import { UserRepositoryAdapter } from '../Infrastructure/persistence/repositories/user-repository.adapter';
 import { DocumentRepositoryAdapter } from '../Infrastructure/persistence/repositories/document.repository.adapters';
-import { RunAnalysisUseCase } from '../Domain/analysis/run-analysis.usecase';
 import { AnalysisRepositoryAdapter } from '../Infrastructure/persistence/repositories/analysis-repository.adapter';
-import { UploadDocumentUseCase } from '../Domain/documents/upload-document-use.case';
-import { TextExtractorPort } from '../Domain/documents/text-extractor.port';
-import { AiAnalysisPort } from '../Domain/analysis/ai-analysis.port';
 import { OpenAiAdapter } from '../Infrastructure/ai/openai.adapter';
+import { CreateUserUseCase } from '../Domain/users/create-user.usecase';
+import { GetUserByIdUseCase } from '../Domain/users/get-user-by-id.usecase';
+import { UploadDocumentUseCase } from '../Domain/documents/upload-document-use.case';
+import { RunAnalysisUseCase } from '../Domain/analysis/run-analysis.usecase';
+import { GetAnalysisByDocumentUseCase } from '../Domain/analysis/get-analysis-by-document.usecase';
+import { TextExtractorAdapter } from '../Infrastructure/persistence/repositories/text-extractor.adapter';
 
 
 @Module({
   imports: [PersistenceModule],
   providers: [
-    // UploadDocumentUseCase
+    OpenAiAdapter,
+    TextExtractorAdapter,
     {
-      provide: UploadDocumentUseCase,
-      useFactory: (
-        documentRepo: DocumentRepositoryAdapter,
-        textExtractor: TextExtractorPort,   // pendiente definir el tipo del text-extractor
-      ) => new UploadDocumentUseCase(documentRepo, textExtractor),   // pendiente ingresar el text-extractor
-      inject: [DocumentRepositoryAdapter],
+      provide: 'UserRepositoryPort',
+      useExisting: UserRepositoryAdapter,
     },
-
-    // RunAnalysisUseCase
     {
-      provide: RunAnalysisUseCase,
-      useFactory: (
-        ai: OpenAiAdapter,
-        analysisRepo: AnalysisRepositoryAdapter,
-      ) => new RunAnalysisUseCase(ai, analysisRepo),
-      inject: [OpenAiAdapter, AnalysisRepositoryAdapter],
-    }
-
-  ],
-  exports: [
+      provide: 'DocumentRepositoryPort',
+      useExisting: DocumentRepositoryAdapter,
+    },
+    {
+      provide: 'AnalysisRepositoryPort',
+      useExisting: AnalysisRepositoryAdapter,
+    },
+    {
+      provide: 'AiAnalysisPort',
+      useExisting: OpenAiAdapter,
+    },
+    {
+      provide: 'TextExtractorPort',
+      useExisting: TextExtractorAdapter,
+    },
+    CreateUserUseCase,
+    GetUserByIdUseCase,
     UploadDocumentUseCase,
     RunAnalysisUseCase,
+    GetAnalysisByDocumentUseCase,
+  ],
+  exports: [
+    CreateUserUseCase,
+    GetUserByIdUseCase,
+    UploadDocumentUseCase,
+    RunAnalysisUseCase,
+    GetAnalysisByDocumentUseCase,
   ],
 })
 export class ApplicationModule {}

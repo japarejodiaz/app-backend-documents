@@ -1,9 +1,11 @@
-import { DocumentEntity } from '../entities/document.entity';
-import { Document } from '../../../Domain/documents/document';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { DocumentRepositoryPort } from '../../../Domain/documents/document.repository.port';
+import { Document } from '../../../Domain/documents/document';
+import { DocumentEntity } from '../entities/document.entity';
+import { DocumentMapper } from '../mappers/document.mapper';
 
 @Injectable()
 export class DocumentRepositoryAdapter implements DocumentRepositoryPort {
@@ -13,14 +15,7 @@ export class DocumentRepositoryAdapter implements DocumentRepositoryPort {
   ) {}
 
   async save(document: Document): Promise<Document> {
-    const entity = this.repo.create({
-      id: document.id,
-      filename: document.filename,
-      mimetype: document.mimetype,
-      size: document.size,
-      storagePath: document.storagePath,
-      user: { id: document.userId }
-    });
+    const entity = this.repo.create(DocumentMapper.toEntity(document));
 
     await this.repo.save(entity);
     return document;
@@ -32,17 +27,6 @@ export class DocumentRepositoryAdapter implements DocumentRepositoryPort {
       relations: ['user', 'analysis']
     });
 
-    if (!entity) return null;
-
-    return new Document(
-      entity.id,
-      entity.filename,
-      entity.mimetype,
-      entity.size,
-      entity.storagePath,
-      entity.createdAt,
-      entity.user?.id,
-      entity.analysis?.[0]?.id
-    );
+    return entity ? DocumentMapper.toDomain(entity) : null;
   }
 }

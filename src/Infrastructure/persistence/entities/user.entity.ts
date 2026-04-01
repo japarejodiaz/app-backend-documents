@@ -1,6 +1,8 @@
-import { Column,
-         CreateDateColumn, Entity,
-         OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn, Entity,
+  OneToMany, PrimaryGeneratedColumn,
+} from 'typeorm';
 import { AnalysisEntity } from './analysis.entity';
 import { DocumentEntity } from './document.entity';
 
@@ -8,22 +10,25 @@ import { DocumentEntity } from './document.entity';
 @Entity('users')
 export class UserEntity {
 
-      @PrimaryGeneratedColumn('uuid')
-      id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-      @Column()
-      email: string;
+  @Column()
+  name: string;
 
-    @Column({ default: 'user'})
-    role: string;
+  @Column()
+  email: string;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column({ default: 'user' })
+  role: string;
 
-    @OneToMany(() => DocumentEntity, doc => doc.user)
-    documents: DocumentEntity[];
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @OneToMany(() => AnalysisEntity, analysis => analysis.user)
-    analysis: AnalysisEntity[];
+  @OneToMany(() => DocumentEntity, doc => doc.user)
+  documents: DocumentEntity[];
+
+  @OneToMany(() => AnalysisEntity, analysis => analysis.user)
+  analysis: AnalysisEntity[];
 
 }
