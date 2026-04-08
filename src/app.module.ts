@@ -1,20 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
 import { EnvValidationSchema } from './Application/config/env.validation';
 import { EnvConfig } from './Application/config/envs.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// Entidades de base de datos
+// Módulos funcionales
 import { PersistenceModule } from './Infrastructure/persistence/persistence.module';
-import { ControllersModule } from './Infrastructure/controllers/controllers.module';
 import { AuthModule } from './Infrastructure/auth/auth.module';
-
+import { DocumentsModule } from './Infrastructure/controllers/documents/module/documents.module';
+import { AnalysisModule } from './Infrastructure/controllers/analysis/module/analysis.module';
+import { UsuariosModule } from './Infrastructure/controllers/usuarios/module/usuarios.module';
 
 
 @Module({
   imports: [
+    // Config global
     ConfigModule.forRoot({
       isGlobal: true,
       load: [EnvConfig],
@@ -23,9 +26,9 @@ import { AuthModule } from './Infrastructure/auth/auth.module';
         '.env',
       ],
       validationSchema: EnvValidationSchema,
-
     }),
 
+    // TypeORM
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -45,12 +48,19 @@ import { AuthModule } from './Infrastructure/auth/auth.module';
         };
       },
     }),
+
+    // Infraestructura
     PersistenceModule,
-    ControllersModule,
-    AuthModule
+
+    // Módulos funcionales
+    AuthModule,
+    UsuariosModule,
+    DocumentsModule,
+    AnalysisModule,
   ],
+
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-}
+export class AppModule {}
+

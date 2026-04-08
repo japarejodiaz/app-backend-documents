@@ -60,7 +60,7 @@ async function bootstrap() {
   const port = Number(process.env.PORT ?? 3000);
   await app.listen(port);
   logger.log(`Application is running on port : ${port} || Enviroment: ${process.env.NODE_ENV}`);
-  logger.log(`Application in url : ${await app.getUrl()}`);
+  logger.log(`Application in url : ${await app.getUrl()}/api/app-documents-ia/docs`);
 }
 
 void bootstrap();

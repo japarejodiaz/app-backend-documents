@@ -6,11 +6,12 @@ export class Document {
     public readonly size: number,
     public readonly storagePath: string,
     public readonly createdAt: Date,
+    public readonly status: 'PENDING' | 'OK' | 'NOK',
     public readonly userId?: string,
     public readonly analysis?: string,
     public readonly text?: string,
-  ) {}
 
+  ) {}
   isPdf(): boolean {
     return this.mimetype === 'application/pdf';
   }

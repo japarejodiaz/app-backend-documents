@@ -29,4 +29,18 @@ export class DocumentRepositoryAdapter implements DocumentRepositoryPort {
 
     return entity ? DocumentMapper.toDomain(entity) : null;
   }
+
+  async delete(id: string): Promise<void> {
+    await this.repo.delete(id);
+  }
+
+  async findAllByUser(userId: string): Promise<DocumentEntity[]> {
+    return this.repo.find({
+      where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
+      relations: ['analysis'],
+    });
+  }
+
+
 }
