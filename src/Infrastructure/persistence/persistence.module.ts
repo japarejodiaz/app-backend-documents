@@ -12,19 +12,12 @@ import { AnalysisRepositoryAdapter } from './repositories/analysis-repository.ad
 import { TextExtractorAdapter } from './repositories/text-extractor.adapter';
 import { OpenAiAdapter } from '../ai/openai.adapter';
 
-// casos de uso
-import { GetUserByIdUseCase } from '../../Domain/users/get-user-by-id.usecase';
-import { UploadDocumentUseCase } from '../../Domain/documents/upload-document-use.case';
-import { RunAnalysisUseCase } from '../../Domain/analysis/run-analysis.usecase';
-import { GetAnalysisByDocumentUseCase } from '../../Domain/analysis/get-analysis-by-document.usecase';
-
 // Tokens
 import { UserRepositoryPortToken } from '../../Domain/users/user.repository.port';
 import { DocumentRepositoryPortToken } from '../../Domain/documents/document.repository.port';
 import { AnalysisRepositoryPortToken } from '../../Domain/analysis/analysis.repository.port';
 import { TextExtractorPortToken } from '../../Domain/documents/text-extractor.port';
 import { AiAnalysisPortToken } from '../../Domain/analysis/ai-analysis.port';
-
 
 @Module({
   imports: [
@@ -35,48 +28,30 @@ import { AiAnalysisPortToken } from '../../Domain/analysis/ai-analysis.port';
     ])
   ],
   providers: [
+    // Adaptadores concretos
     UserRepositoryAdapter,
     DocumentRepositoryAdapter,
     AnalysisRepositoryAdapter,
     TextExtractorAdapter,
-    AnalysisRepositoryAdapter,
     OpenAiAdapter,
-    {
-      provide: AiAnalysisPortToken,
-      useExisting: OpenAiAdapter,
-    },
 
-    // Tokens
+    // Puertos → adaptadores
     { provide: UserRepositoryPortToken, useExisting: UserRepositoryAdapter },
     { provide: DocumentRepositoryPortToken, useExisting: DocumentRepositoryAdapter },
     { provide: AnalysisRepositoryPortToken, useExisting: AnalysisRepositoryAdapter },
     { provide: TextExtractorPortToken, useExisting: TextExtractorAdapter },
-    { provide: AnalysisRepositoryPortToken, useExisting: AnalysisRepositoryAdapter },
-
-    // Casos de uso
-    GetUserByIdUseCase,
-    UploadDocumentUseCase,
-    RunAnalysisUseCase,
-    GetAnalysisByDocumentUseCase,
-
-
+    { provide: AiAnalysisPortToken, useExisting: OpenAiAdapter },
   ],
   exports: [
-    // Tokens de puertos
+    // Exportamos puertos
     UserRepositoryPortToken,
     DocumentRepositoryPortToken,
     AnalysisRepositoryPortToken,
     TextExtractorPortToken,
-    AnalysisRepositoryPortToken,
-  // Casos de uso
-    GetUserByIdUseCase,
-    UploadDocumentUseCase,
-    RunAnalysisUseCase,
-    GetAnalysisByDocumentUseCase,
+    AiAnalysisPortToken,
 
-    // Opcional
+    // Exportamos TypeORM
     TypeOrmModule,
-
   ],
 })
 export class PersistenceModule {}

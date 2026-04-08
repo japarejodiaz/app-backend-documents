@@ -2,7 +2,6 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, Pri
 import { AnalysisEntity } from './analysis.entity';
 import { UserEntity } from './user.entity';
 
-
 @Entity('documents')
 export class DocumentEntity {
 
@@ -33,5 +32,12 @@ export class DocumentEntity {
 
   @Column({ type: 'text', nullable: true })
   text: string;
+
+  @Column({
+    type: 'varchar',
+    length: 10,
+    default: 'PENDING',
+  })
+  status: 'PENDING' | 'OK' | 'NOK';
 
 }

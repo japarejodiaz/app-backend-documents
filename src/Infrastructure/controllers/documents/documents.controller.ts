@@ -5,22 +5,31 @@ import {
   UseInterceptors,
   UploadedFile,
   Body,
-  BadRequestException,
+  BadRequestException, UseGuards, Get, Param, Delete, Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 
 import { UploadDocumentUseCase } from '../../../Domain/documents/upload-document-use.case';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { DocumentResponseDto } from './dto/document-response.dto';
+import { JwtAuthGuard } from '../../../Application/auth/guards/jwt.guard';
+import { GetDocumentByIdUseCase } from '../../../Domain/documents/get-document-by-id.usecase';
+import { DeleteDocumentUseCase } from '../../../Domain/documents/delete-document.usecase';
+import { ListDocumentsUseCase } from '../../../Domain/documents/list-document.usecase';
 
 @ApiTags('Documents')
 @Controller('documents')
 export class DocumentsController {
-  constructor(private readonly uploadDocument: UploadDocumentUseCase) {}
+  constructor(private readonly uploadDocument: UploadDocumentUseCase,
+              private readonly getDocumentById: GetDocumentByIdUseCase,
+              private readonly listDocumentsUseCase: ListDocumentsUseCase,
+              private readonly deleteDocumentUseCase: DeleteDocumentUseCase,) {}
 
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Post('upload')
   @ApiOperation({ summary: 'Sube un documento y extrae su texto' })
   @ApiConsumes('multipart/form-data')
@@ -40,7 +49,6 @@ export class DocumentsController {
     schema: {
       type: 'object',
       properties: {
-        userId: { type: 'string' },
         file: { type: 'string', format: 'binary' },
       },
     },
@@ -48,7 +56,7 @@ export class DocumentsController {
   @ApiResponse({ status: 201, type: DocumentResponseDto })
   async upload(
     @UploadedFile() file: Express.Multer.File,
-    @Body() body: UploadDocumentDto,
+    @Req() req: any,
   ): Promise<DocumentResponseDto> {
     if (!file) {
       throw new BadRequestException('El archivo es requerido');
@@ -60,7 +68,7 @@ export class DocumentsController {
       mimetype: file.mimetype,
       size: file.size,
       storagePath: file.path,
-      userId: body.userId,
+      userId: req.user.userId,
     });
 
     return {
@@ -70,8 +78,62 @@ export class DocumentsController {
       size: document.size,
       storagePath: document.storagePath,
       createdAt: document.createdAt,
+      status: document.status,
       userId: document.userId,
       text: document.text,
+
     };
+  }
+
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtiene un documento por ID' })
+  @ApiResponse({ status: 200, type: DocumentResponseDto })
+  async getDocument(@Param('id') id: string, @Req() req: any): Promise<DocumentResponseDto> {
+    const doc = await this.getDocumentById.execute(id, req.user.userId);
+
+    return {
+      id: doc.id,
+      filename: doc.filename,
+      mimetype: doc.mimetype,
+      size: doc.size,
+      storagePath: doc.storagePath,
+      createdAt: doc.createdAt,
+      status: doc.status,
+      userId: doc.userId?.toString(),
+      text: doc.text,
+    };
+  }
+
+
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @ApiOperation({ summary: 'Elimina un documento por ID' })
+  @ApiResponse({ status: 204, description: 'Documento eliminado' })
+  async deleteDocument(@Param('id') id: string, @Req() req: any): Promise<void> {
+    await this.deleteDocumentUseCase.execute(id, req.user.userId);
+  }
+
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  @ApiOperation({ summary: 'Lista todos los documentos del usuario autenticado' })
+  @ApiResponse({ status: 200, type: DocumentResponseDto, isArray: true })
+  async listDocuments(@Req() req: any): Promise<DocumentResponseDto[]> {
+    const docs = await this.listDocumentsUseCase.execute(req.user.userId);
+
+    return docs.map(doc => ({
+      id: doc.id,
+      filename: doc.filename,
+      mimetype: doc.mimetype,
+      size: doc.size,
+      storagePath: doc.storagePath,
+      createdAt: doc.createdAt,
+      status: doc.status,
+      userId: doc.user?.id,
+      text: doc.text,
+    }));
   }
 }

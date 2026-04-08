@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UploadDocumentDto {
-  @ApiProperty({ example: 'uuid-user' })
-  userId: string;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  file: any;
 }

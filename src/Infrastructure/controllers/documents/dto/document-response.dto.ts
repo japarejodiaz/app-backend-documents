@@ -24,4 +24,7 @@ export class DocumentResponseDto {
 
   @ApiProperty({ required: false, description: 'Texto extraído del documento' })
   text?: string;
+
+  @ApiProperty({ enum: ['PENDING', 'OK', 'NOK'] })
+  status: 'PENDING' | 'OK' | 'NOK';
 }

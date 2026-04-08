@@ -29,6 +29,7 @@ export class UploadDocumentUseCase {
       input.size,
       input.storagePath,
       new Date(),
+      'PENDING',
       input.userId,
       undefined,
       undefined,
@@ -38,6 +39,10 @@ export class UploadDocumentUseCase {
 
     const extractedText = await this.textExtractor.extractText(input.storagePath);
 
+    // 3) Determinar estado final
+    const finalStatus: 'OK' | 'NOK' =
+      extractedText && extractedText.trim().length > 0 ? 'OK' : 'NOK';
+
     const updatedDocument = new Document(
       document.id,
       document.filename,
@@ -45,9 +50,11 @@ export class UploadDocumentUseCase {
       document.size,
       document.storagePath,
       document.createdAt,
+      finalStatus,
       document.userId,
       undefined,
       extractedText,
+
     );
 
     await this.documentRepository.save(updatedDocument);

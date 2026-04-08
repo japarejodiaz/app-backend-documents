@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
-import { UsuariosController } from './usuarios/usuarios.controller';
-import { DocumentsController } from './documents/documents.controller';
-import { AnalysisController } from './analysis/analysis.controller';
-import { PersistenceModule } from '../persistence/persistence.module';
+import { DocumentsModule } from './documents/module/documents.module';
+import { AnalysisModule } from './analysis/module/analysis.module';
+import { UsuariosModule } from './usuarios/module/usuarios.module';
 
 @Module({
   imports: [
-    PersistenceModule, // ← NECESARIO para GetUserByIdUseCase
+    UsuariosModule,
+    DocumentsModule,
+    AnalysisModule,
   ],
-  controllers: [UsuariosController, DocumentsController, AnalysisController],
 })
 export class ControllersModule {}
+
 
