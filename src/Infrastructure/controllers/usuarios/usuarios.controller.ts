@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Param, Logger, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-import { GetUserByIdUseCase } from '../../../Domain/users/get-user-by-id.usecase';
+import { GetUserByIdUseCase } from '../../../Application/users/use-cases/get-user-by-id.usecase';
 import { UserResponseDto } from './dto/user-response.dto';
 import { JwtAuthGuard } from '../../../Application/auth/guards/jwt.guard';
 

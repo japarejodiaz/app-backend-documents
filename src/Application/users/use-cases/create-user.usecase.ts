@@ -1,13 +1,11 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
-import { User } from './user';
-import type { UserRepositoryPort } from './user.repository.port';
-import { UserRepositoryPortToken } from './user.repository.port';
-import { PasswordHasherPortToken } from '../auth/ports/password-hasher.port';
-import type { PasswordHasherPort } from '../auth/ports/password-hasher.port';
-
-
+import { User } from '../../../Domain/users/user';
+import type { UserRepositoryPort } from '../../../Domain/users/user.repository.port';
+import { UserRepositoryPortToken } from '../../../Domain/users/user.repository.port';
+import { PasswordHasherPortToken } from '../../../Domain/auth/ports/password-hasher.port';
+import type { PasswordHasherPort } from '../../../Domain/auth/ports/password-hasher.port';
 
 
 export interface CreateUserDto {

@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 // Tokens
-import { AiAnalysisPortToken } from './ai-analysis.port';
-import { AnalysisRepositoryPortToken } from './analysis.repository.port';
+import { AiAnalysisPortToken } from '../../../Domain/analysis/ai-analysis.port';
+import { AnalysisRepositoryPortToken } from '../../../Domain/analysis/analysis.repository.port';
 
 // Puertos
-import type { AnalysisRepositoryPort } from './analysis.repository.port';
-import type { AiAnalysisPort } from './ai-analysis.port';
-import { Analysis } from './analysis';
-import { RunAnalysisDto } from '../../Infrastructure/controllers/analysis/dto/run-analysis.dto';
+import type { AnalysisRepositoryPort } from '../../../Domain/analysis/analysis.repository.port';
+import type { AiAnalysisPort } from '../../../Domain/analysis/ai-analysis.port';
+import { Analysis } from '../../../Domain/analysis/analysis';
+import { RunAnalysisDto } from '../../../Infrastructure/controllers/analysis/dto/run-analysis.dto';
 
 @Injectable()
 export class RunAnalysisUseCase {
@@ -23,7 +23,7 @@ export class RunAnalysisUseCase {
     let result;
 
     switch (input.type) {
-      case 'summary':
+      /*case 'summary':
         result = await this.aiAnalysis.analyzeSummary(input.documentId);
         break;
 
@@ -37,7 +37,7 @@ export class RunAnalysisUseCase {
 
       case 'topics':
         result = await this.aiAnalysis.detectTopics(input.documentId);
-        break;
+        break;*/
 
       case 'full':
         result = await this.aiAnalysis.analyze(input.documentId);

@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { RunAnalysisUseCase } from '../../../Domain/analysis/run-analysis.usecase';
-import { GetAnalysisByDocumentUseCase } from '../../../Domain/analysis/get-analysis-by-document.usecase';
+import { RunAnalysisUseCase } from '../../../Application/analysis/use-cases/run-analysis.usecase';
+import { GetAnalysisByDocumentUseCase } from '../../../Application/analysis/use-cases/get-analysis-by-document.usecase';
 import { RunAnalysisDto } from './dto/run-analysis.dto';
 import { AnalysisResponseDto } from './dto/analysis-response.dto';
 

@@ -1,8 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
-import { User } from './user';
-import { UserRepositoryPortToken } from './user.repository.port';
-import type { UserRepositoryPort } from './user.repository.port';
+import { User } from '../../../Domain/users/user';
+import { UserRepositoryPortToken } from '../../../Domain/users/user.repository.port';
+import type { UserRepositoryPort } from '../../../Domain/users/user.repository.port';
 
 @Injectable()
 export class GetUserByIdUseCase {

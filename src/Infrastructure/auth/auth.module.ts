@@ -19,7 +19,7 @@ import { JwtVerifierAdapter } from './adapter/jwt-verifier.adapter';
 import { PasswordHasherAdapter } from './adapter/password-hasher.adapter';
 import { ValidateUserUseCase } from '../../Application/auth/use-cases/validate-user.use-case';
 import { LoginUseCase } from '../../Application/auth/use-cases/login.use-case';
-import { CreateUserUseCase } from '../../Domain/users/create-user.usecase';
+import { CreateUserUseCase } from '../../Application/users/use-cases/create-user.usecase';
 
 
 @Module({

@@ -4,8 +4,8 @@ import { PersistenceModule } from '../../../persistence/persistence.module';
 import { AnalysisController } from '../analysis.controller';
 
 // Casos de uso
-import { RunAnalysisUseCase } from '../../../../Domain/analysis/run-analysis.usecase';
-import { GetAnalysisByDocumentUseCase } from '../../../../Domain/analysis/get-analysis-by-document.usecase';
+import { RunAnalysisUseCase } from '../../../../Application/analysis/use-cases/run-analysis.usecase';
+import { GetAnalysisByDocumentUseCase } from '../../../../Application/analysis/use-cases/get-analysis-by-document.usecase';
 
 
 

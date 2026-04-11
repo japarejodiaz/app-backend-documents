@@ -12,13 +12,14 @@ import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse, ApiBearerAuth
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 
-import { UploadDocumentUseCase } from '../../../Domain/documents/upload-document-use.case';
+import { UploadDocumentUseCase } from '../../../Application/documents/use-cases/upload-document-use.case';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { DocumentResponseDto } from './dto/document-response.dto';
 import { JwtAuthGuard } from '../../../Application/auth/guards/jwt.guard';
-import { GetDocumentByIdUseCase } from '../../../Domain/documents/get-document-by-id.usecase';
-import { DeleteDocumentUseCase } from '../../../Domain/documents/delete-document.usecase';
-import { ListDocumentsUseCase } from '../../../Domain/documents/list-document.usecase';
+import { GetDocumentByIdUseCase } from '../../../Application/documents/use-cases/get-document-by-id.usecase';
+import { DeleteDocumentUseCase } from '../../../Application/documents/use-cases/delete-document.usecase';
+import { ListDocumentsUseCase } from '../../../Application/documents/use-cases/list-document.usecase';
+import { AnalyzeGenericTextUseCase } from '../../../Application/documents/use-cases/analyze-generic-text.usecase';
 
 @ApiTags('Documents')
 @Controller('documents')
@@ -26,7 +27,8 @@ export class DocumentsController {
   constructor(private readonly uploadDocument: UploadDocumentUseCase,
               private readonly getDocumentById: GetDocumentByIdUseCase,
               private readonly listDocumentsUseCase: ListDocumentsUseCase,
-              private readonly deleteDocumentUseCase: DeleteDocumentUseCase,) {}
+              private readonly deleteDocumentUseCase: DeleteDocumentUseCase,
+              private readonly analyzeGenericTextUseCase: AnalyzeGenericTextUseCase,) {}
 
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
@@ -135,5 +137,28 @@ export class DocumentsController {
       userId: doc.user?.id,
       text: doc.text,
     }));
+  }
+
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
+  @Post('analyze-text')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: join(process.cwd(), 'static', 'uploads'),
+        filename: (_req, file, cb) => {
+          const unique = randomUUID();
+          cb(null, `${unique}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  async analyzeGeneric(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('El archivo es requerido');
+    }
+
+    return await this.analyzeGenericTextUseCase.execute(file.path);
   }
 }

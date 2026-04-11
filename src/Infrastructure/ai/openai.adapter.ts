@@ -1,31 +1,41 @@
 import { Inject, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
-
 import type { AiAnalysisPort } from '../../Domain/analysis/ai-analysis.port';
 import { DocumentRepositoryPortToken } from '../../Domain/documents/document.repository.port';
 import type { DocumentRepositoryPort } from '../../Domain/documents/document.repository.port';
 
-
 @Injectable()
 export class OpenAiAdapter implements AiAnalysisPort {
   private readonly client: OpenAI;
+  private readonly apiKey = process.env.AI_API_KEY;
+  private readonly model: string = process.env.AI_MODEL || 'gpt-4o-mini';
+
 
   constructor(
     @Inject(DocumentRepositoryPortToken)
     private readonly documentRepo: DocumentRepositoryPort,
   ) {
     this.client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: this.apiKey,
     });
   }
 
+  // 🔥 Pipeline original: analiza documento guardado
   async analyze(documentId: string): Promise<any> {
     const doc = await this.documentRepo.findById(documentId);
     if (!doc) throw new Error('Document not found');
 
     const text = doc.text ?? '';
+    return this.callModel(this.buildPrompt(text));
+  }
 
-    return this.callModel(`
+  // 🔥 Pipeline rápido: analiza texto directo
+  async analyzeText(text: string): Promise<any> {
+    return this.callModel(this.buildPrompt(text));
+  }
+
+  private buildPrompt(text: string): string {
+    return `
       Analiza el siguiente texto legal y devuelve:
       - Resumen
       - Palabras clave
@@ -35,56 +45,12 @@ export class OpenAiAdapter implements AiAnalysisPort {
 
       Texto:
       ${text}
-    `);
-  }
-
-  async analyzeSummary(documentId: string): Promise<any> {
-    const doc = await this.documentRepo.findById(documentId);
-    if (!doc) throw new Error('Document not found');
-
-    return this.summarize(doc.text ?? '');
-  }
-
-  async analyzeKeywords(documentId: string): Promise<any> {
-    const doc = await this.documentRepo.findById(documentId);
-    if (!doc) throw new Error('Document not found');
-
-    return this.callModel(`
-      Extrae las palabras clave más relevantes del siguiente texto:
-      ${doc.text ?? ''}
-    `);
-  }
-
-  async summarize(text: string): Promise<any> {
-    return this.callModel(`
-      Resume el siguiente texto legal en 5 puntos claros:
-      ${text}
-    `);
-  }
-
-  async extractClauses(documentId: string): Promise<any> {
-    const doc = await this.documentRepo.findById(documentId);
-    if (!doc) throw new Error('Document not found');
-
-    return this.callModel(`
-      Extrae las cláusulas más importantes del siguiente texto legal:
-      ${doc.text ?? ''}
-    `);
-  }
-
-  async detectTopics(documentId: string): Promise<any> {
-    const doc = await this.documentRepo.findById(documentId);
-    if (!doc) throw new Error('Document not found');
-
-    return this.callModel(`
-      Identifica los temas principales del siguiente texto legal:
-      ${doc.text ?? ''}
-    `);
+    `;
   }
 
   private async callModel(prompt: string): Promise<any> {
     const response = await this.client.chat.completions.create({
-      model: 'gpt-4o-mini',
+        model: this.model as any,
       messages: [
         { role: 'system', content: 'Eres un analista legal experto.' },
         { role: 'user', content: prompt },
@@ -93,4 +59,5 @@ export class OpenAiAdapter implements AiAnalysisPort {
 
     return response.choices[0].message.content;
   }
+
 }

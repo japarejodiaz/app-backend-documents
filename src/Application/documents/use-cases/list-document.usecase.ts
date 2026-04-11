@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DocumentRepositoryPortToken } from './document.repository.port';
-import type { DocumentRepositoryPort  } from './document.repository.port';
+import { DocumentRepositoryPortToken } from '../../../Domain/documents/document.repository.port';
+import type { DocumentRepositoryPort  } from '../../../Domain/documents/document.repository.port';
 
 
 @Injectable()

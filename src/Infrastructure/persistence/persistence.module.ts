@@ -32,14 +32,12 @@ import { AiAnalysisPortToken } from '../../Domain/analysis/ai-analysis.port';
     UserRepositoryAdapter,
     DocumentRepositoryAdapter,
     AnalysisRepositoryAdapter,
-    TextExtractorAdapter,
     OpenAiAdapter,
 
     // Puertos → adaptadores
     { provide: UserRepositoryPortToken, useExisting: UserRepositoryAdapter },
     { provide: DocumentRepositoryPortToken, useExisting: DocumentRepositoryAdapter },
     { provide: AnalysisRepositoryPortToken, useExisting: AnalysisRepositoryAdapter },
-    { provide: TextExtractorPortToken, useExisting: TextExtractorAdapter },
     { provide: AiAnalysisPortToken, useExisting: OpenAiAdapter },
   ],
   exports: [
@@ -47,7 +45,6 @@ import { AiAnalysisPortToken } from '../../Domain/analysis/ai-analysis.port';
     UserRepositoryPortToken,
     DocumentRepositoryPortToken,
     AnalysisRepositoryPortToken,
-    TextExtractorPortToken,
     AiAnalysisPortToken,
 
     // Exportamos TypeORM

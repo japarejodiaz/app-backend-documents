@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { Analysis } from './analysis';
-import type { AnalysisRepositoryPort } from './analysis.repository.port';
-import { AnalysisRepositoryPortToken } from './analysis.repository.port';
+import { Analysis } from '../../../Domain/analysis/analysis';
+import type { AnalysisRepositoryPort } from '../../../Domain/analysis/analysis.repository.port';
+import { AnalysisRepositoryPortToken } from '../../../Domain/analysis/analysis.repository.port';
 
 @Injectable()
 export class GetAnalysisByDocumentUseCase {

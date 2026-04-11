@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DocumentRepositoryPortToken } from './document.repository.port';
-import type { DocumentRepositoryPort } from './document.repository.port';
-import { TextExtractorPortToken } from './text-extractor.port';
-import type { TextExtractorPort } from './text-extractor.port';
-import { Document } from './document';
+import { DocumentRepositoryPortToken } from '../../../Domain/documents/document.repository.port';
+import type { DocumentRepositoryPort } from '../../../Domain/documents/document.repository.port';
+import { TextExtractorPortToken } from '../../../Domain/documents/text-extractor.port';
+import type { TextExtractorPort } from '../../../Domain/documents/text-extractor.port';
+import { Document } from '../../../Domain/documents/document';
 
 @Injectable()
 export class UploadDocumentUseCase {
