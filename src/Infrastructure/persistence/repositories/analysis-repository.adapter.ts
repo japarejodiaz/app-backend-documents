@@ -40,4 +40,29 @@ export class AnalysisRepositoryAdapter implements AnalysisRepositoryPort {
     return entity ? AnalysisMapper.toDomain(entity) : null;
   }
 
+  async findAll(): Promise<Analysis[]> {
+    const entities = await this.repo.find({
+      relations: ['document', 'user'],
+      order: { createdAt: 'DESC' },
+    });
+
+    return entities.map(e => AnalysisMapper.toDomain(e));
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repo.delete(id);
+  }
+
+  async findByUserId(userId: string): Promise<Analysis[]> {
+    const entities = await this.repo.find({
+      where: { user: { id: userId } },
+      relations: ['document', 'user'],
+      order: { createdAt: 'DESC' },
+    });
+
+    return entities.map(e => AnalysisMapper.toDomain(e));
+  }
+
+
+
 }

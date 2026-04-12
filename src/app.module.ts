@@ -11,8 +11,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PersistenceModule } from './Infrastructure/persistence/persistence.module';
 import { AuthModule } from './Infrastructure/auth/auth.module';
 import { DocumentsModule } from './Infrastructure/controllers/documents/module/documents.module';
-import { AnalysisModule } from './Infrastructure/controllers/analysis/module/analysis.module';
 import { UsuariosModule } from './Infrastructure/controllers/usuarios/module/usuarios.module';
+import { AnalysisModule } from './Infrastructure/controllers/analysis/module/analysis.module';
+
 
 
 @Module({
@@ -56,7 +57,7 @@ import { UsuariosModule } from './Infrastructure/controllers/usuarios/module/usu
     AuthModule,
     UsuariosModule,
     DocumentsModule,
-    AnalysisModule,
+    AnalysisModule
   ],
 
   controllers: [AppController],

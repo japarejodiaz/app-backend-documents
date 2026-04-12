@@ -8,7 +8,7 @@ export class Analysis {
     public readonly createdAt: Date) {
   }
 
-  isSummary(): boolean {
+  /*isSummary(): boolean {
     return this.type === 'summary';
-  }
+  }*/
 }

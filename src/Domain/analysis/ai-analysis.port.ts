@@ -1,8 +1,11 @@
 export const AiAnalysisPortToken = Symbol('AiAnalysisPort');
 
 export interface AiAnalysisPort {
-  analyze(documentId: string): Promise<any>;   // pipeline original
-  analyzeText(text: string): Promise<any>;     // pipeline rápido
+
+  analyze(text: string): Promise<any>;        // análisis IA completo
+  analyzeText(text: string): Promise<any>;    // análisis rápido (DocumentsController)
+
+// pipeline rápido
 /*  analyzeSummary(documentId: string): Promise<any>;
   analyzeKeywords(documentId: string): Promise<any>;
   summarize(text: string): Promise<any>;

@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { PersistenceModule } from '../persistence/persistence.module';
 
 import { AuthService } from '../../Application/auth/services/auth.service';
-import { AuthController } from './controllers/auth.controller';
+import { AuthController } from '../controllers/auth/auth.controller';
 import { JwtStrategy } from '../../Application/auth/strategies/jwt.strategy';
 
 // Tokens

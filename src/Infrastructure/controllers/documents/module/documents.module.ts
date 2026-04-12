@@ -13,9 +13,9 @@ import { DocumentsController } from '../documents.controller';
 import { PersistenceModule } from '../../../persistence/persistence.module';
 import { AnalyzeGenericTextUseCase } from '../../../../Application/documents/use-cases/analyze-generic-text.usecase';
 import { TextExtractorPortToken } from '../../../../Domain/documents/text-extractor.port';
-import { TextExtractorAdapter } from '../../../persistence/repositories/text-extractor.adapter';
+import { TextExtractorAdapter } from '../../../analysis/text-extraction/text-extractor.adapter';
 import { GenericTextAnalyzerPortToken } from '../../../../Domain/documents/generic-text-analyzer.port';
-import { GenericTextAnalyzerAdapter } from '../../../persistence/repositories/generic-text-analyzer.adapter';
+import { GenericTextAnalyzerAdapter } from '../../../analysis/generic/generic-text-analyzer.adapter';
 
 @Module({
   imports: [
