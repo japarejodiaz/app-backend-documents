@@ -21,78 +21,240 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# 📄 Backend de Análisis Documental
+Sistema profesional de análisis documental con IA (OpenAI), análisis por reglas, extracción de texto desde PDF, consolidación de resultados y arquitectura limpia.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 🚀 Tecnologías principales
 
+- **Node.js + NestJS**
+- **TypeScript**
+- **PostgreSQL**
+- **TypeORM**
+- **OpenAI (gpt-4o-mini)**
+- **Poppler-utils** (extracción de texto PDF)
+- **JWT Authentication**
+- **Arquitectura Hexagonal / Clean Architecture**
+
+---
+
+## 📦 Requisitos del sistema
+
+### 🔹 Node.js
+Versión recomendada: **18+**
+
+### 🔹 PostgreSQL
+Versión recomendada: **14+**
+
+### 🔹 Poppler (para extracción de texto PDF)
+
+#### Ubuntu / Debian
 ```bash
-$ npm install
-```
+sudo apt-get install poppler-utils
+brew install poppler
 
-## Compile and run the project
-
+#### Windows
 ```bash
-# development
-$ npm run start
+Descargar desde: https://blog.alivate.com.au/poppler-windows/ (blog.alivate.com.au in Bing)
+Agregar pdftotext.exe al PATH.
 
-# watch mode
-$ npm run start:dev
+#### Estructura del proyecto
+src/
+ ├─ Application/
+ │   ├─ analysis/
+ │   │   ├─ run-analysis.usecase.ts
+ │   │   ├─ ai-analysis.port.ts
+ │   │   └─ rule-analysis.service.ts
+ │   ├─ documents/
+ │   └─ users/
+ │
+ ├─ Domain/
+ │   ├─ analysis/
+ │   ├─ documents/
+ │   └─ users/
+ │
+ ├─ Infrastructure/
+ │   ├─ adapters/
+ │   │   ├─ openai/
+ │   │   │   └─ openai.adapter.ts
+ │   │   ├─ pdf/
+ │   │   │   └─ poppler.adapter.ts
+ │   │   └─ rule-engine/
+ │   ├─ persistence/
+ │   │   ├─ entities/
+ │   │   └─ repositories/
+ │   └─ http/
+ │       ├─ controllers/
+ │       └─ dto/
+ │
+ └─ main.ts
 
-# production mode
-$ npm run start:prod
-```
 
-## Run tests
+Arquitectura limpia basada en puertos y adaptadores.
 
-```bash
-# unit tests
-$ npm run test
+⚙️ Variables de entorno
+Crear un archivo .env:
+# Server
+PORT=3000
 
-# e2e tests
-$ npm run test:e2e
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASS=postgres
+DB_NAME=documents
 
-# test coverage
-$ npm run test:cov
-```
+# JWT
+JWT_SECRET=supersecretkey
 
-## Deployment
+# OpenAI
+AI_API_KEY=tu_api_key
+AI_MODEL=gpt-4o-mini
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+# Storage
+UPLOAD_DIR=./uploads
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+📦 Instalación
+npm install
 
-## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+▶️ Ejecutar en desarrollo
+npm run start:dev
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+🧪 Scripts disponibles
+"scripts": {
+  "start": "nest start",
+  "start:dev": "nest start --watch",
+  "build": "nest build",
+  "format": "prettier --write \"src/**/*.ts\"",
+  "lint": "eslint \"src/**/*.ts\" --fix"
+}
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+📄 Flujo de análisis documental
+1. Subida del documento
+- Se guarda en disco
+- Se crea registro en DB
+- Estado inicial: PENDING
+2. Extracción de texto
+- Usando Poppler (pdftotext)
+3. Validación
+- Estado debe ser OK
+- Usuario debe ser dueño del documento
+4. Análisis por reglas
+- Extracción de entidades
+- Términos técnicos
+- Riesgos básicos
+- Texto crudo
+- Confianza estimada
+5. Análisis por IA (OpenAI)
+- Summary
+- Keywords
+- Topics
+- Clauses
+- Risks
+- JSON limpio (sin bloques ```)
+6. Consolidación
+- Se combinan IA + reglas
+- Se guarda en DB
+7. Respuesta final
+- JSON completo con ambos análisis
+
+🔥 Endpoints principales
+🔐 Autenticación
+POST /auth/register
+POST /auth/login
+
+
+📄 Documentos
+POST /documents/upload
+GET  /documents
+GET  /documents/:id
+DELETE /documents/:id
+
+
+🧠 Análisis
+POST /analysis/run/:documentId
+GET  /analysis/:id
+GET  /analysis/document/:documentId
+DELETE /analysis/:id
+
+
+
+🧠 IA — OpenAI Adapter
+Características:
+- Modelo: gpt-4o-mini
+- Respuesta siempre en JSON válido
+- Limpieza automática de bloques ```json
+- Fallback seguro si la IA falla
+- Consolidación con análisis por reglas
+Funciones:
+- analyze(text)
+- analyzeText(text)
+- safeCall()
+- cleanJsonResponse()
+
+📚 Dependencias principales (package.json)
+{
+  "dependencies": {
+    "@nestjs/common": "^10.x",
+    "@nestjs/core": "^10.x",
+    "@nestjs/jwt": "^10.x",
+    "@nestjs/passport": "^10.x",
+    "@nestjs/platform-express": "^10.x",
+    "openai": "^4.x",
+    "passport": "^0.7.x",
+    "passport-jwt": "^4.x",
+    "pg": "^8.x",
+    "poppler-simple": "^1.x",
+    "typeorm": "^0.3.x"
+  }
+}
+
+
+
+🧩 tsconfig.json (resumen)
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "outDir": "./dist"
+  }
+}
+
+
+
+🛡 Seguridad
+- JWT para autenticación
+- Guards para proteger endpoints
+- Validación de usuario dueño del documento
+- Sanitización de entrada
+- IA encapsulada en adapter seguro
+
+🧭 Roadmap
+- [x] Extracción PDF
+- [x] IA integrada
+- [x] Análisis por reglas
+- [x] Consolidación
+- [x] Persistencia
+- [x] Logs profesionales
+- [ ] CRUD de análisis (ajustar con frontend)
+- [ ] Dashboard Angular
+- [ ] Roles (opcional)
+
+👨‍💻 Autor
+Jesús Parejo — Backend Architect
+Sistema de análisis documental con IA + reglas.
+
+---

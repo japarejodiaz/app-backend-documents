@@ -12,15 +12,21 @@ export class LoginUseCase {
     private readonly jwtSigner: JwtSignerPort,
   ) {}
 
-  async execute(user: User): Promise<TokenResponseDto> {
+  async execute(
+    user: User
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = {
       sub: user.id,
       email: user.email,
       role: user.role,
     };
 
+    const accessToken = this.jwtSigner.sign(payload, '15m');
+    const refreshToken = this.jwtSigner.sign(payload, '7d');
+
     return {
-      accessToken: this.jwtSigner.sign(payload),
+      accessToken,
+      refreshToken,
     };
   }
 }

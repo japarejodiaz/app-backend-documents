@@ -6,7 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 export class JwtSignerAdapter implements JwtSignerPort {
   constructor(private readonly jwt: JwtService) {}
 
-  sign(payload: any): string {
-    return this.jwt.sign(payload);
+  sign(payload: Record<string, any>, expiresIn = '15m'): string {
+    return (this.jwt as any).sign(payload, { expiresIn } as any);
   }
 }
+

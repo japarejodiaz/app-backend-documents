@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
 
 
 async function bootstrap() {
@@ -13,12 +14,12 @@ async function bootstrap() {
   const basePath = configBaseP.get<string>('basePath') ?? 'api';
 
   app.setGlobalPrefix(basePath);
+  app.use(cookieParser());
 
-
+  // CORS correcto para cookies
   app.enableCors({
-    origin: '*',
-    allowedHeaders: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    origin: 'http://localhost:4200',
+    credentials: true,
   });
 
   app.useGlobalPipes(
